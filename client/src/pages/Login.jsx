@@ -30,7 +30,7 @@ const Login = () => {
           Login Account
         </h2>
         <div className="mb-2">
-          <label className="text-gray-500 mb-2 font-bold" for="username">
+          <label className="text-gray-500 mb-2 font-bold" htmlFor="username">
             Username
           </label>
           <input
@@ -45,7 +45,7 @@ const Login = () => {
         </div>
 
         <div className="mb-2">
-          <label className="text-gray-500 mb-2 font-bold" for="password">
+          <label className="text-gray-500 mb-2 font-bold" htmlFor="password">
             Password
           </label>
           <input
