@@ -1,4 +1,8 @@
 import React, { useState } from "react";
+import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   const [inputs, setInputs] = useState({
@@ -6,9 +10,11 @@ const Login = () => {
     password: "",
   });
 
+  const navigate = useNavigate();
+
   const onChangeHandler = (e) => {
     const { name, value } = e.target;
-    setInputs(prev => {
+    setInputs((prev) => {
       return { ...prev, [name]: value };
     });
   };
@@ -17,6 +23,59 @@ const Login = () => {
     e.preventDefault();
 
     console.log(inputs);
+
+    axios
+      .post(
+        "http://localhost:5000/api/user/login",
+        { ...inputs },
+        { withCredentials: true }
+      )
+      .then((res) => {
+        console.log(res);
+
+        if (!res.data.created) {
+          if (res.data.error_type === 0) {
+            toast.error(res.data.error[0].msg, {
+              position: "bottom-right",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "light",
+            });
+          } else if (res.data.error_type === 1) {
+            toast.error(res.data.message, {
+              position: "bottom-right",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "light",
+            });
+          }
+        }
+
+        if (res.data.created) {
+          toast.success(res.data.message, {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+          });
+          navigate("/");
+        }
+      })
+      .catch((err) => {
+        console.log(`Request error: ${err}`);
+      });
     //we will use axios to connect to the backend
   };
 
@@ -49,7 +108,7 @@ const Login = () => {
             Password
           </label>
           <input
-            type="text"
+            type="password"
             placeholder="password"
             id="password"
             onChange={onChangeHandler}
@@ -68,6 +127,7 @@ const Login = () => {
           </a>
         </div>
       </form>
+      <ToastContainer />
     </div>
   );
 };
